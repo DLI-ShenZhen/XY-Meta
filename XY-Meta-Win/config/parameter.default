@@ -1,14 +1,14 @@
 ﻿#Path of input query spectral 
-input=d:\Work\代谢组数据库\代谢物鉴定开发\汇报\Analysis_article\Different_similarity_database\unfiltered\Massbank.mgf
+input=.\XY-Meta-Win\query\GNPS_LIBRARY.mgf
 
 #Path of input reference spectral 
-reference=d:\Work\代谢组数据库\代谢物鉴定开发\汇报\Analysis_article\Different_similarity_database\unfiltered\database\GNPS_Target
+reference=.\XY-Meta-Win\database\MoNA-export-HMDB.mgf
 
 #path of output result
 output=
 
 #path of Decoy spectral (if decoy model is set into extraposition, this option can be used)
-#decoyinput=d:\Work\代谢组数据库\代谢物鉴定开发\汇报\Analysis_article\Different_similarity_database\unfiltered\database\Random.mgf
+#decoyinput=
 
 #Search mode (default:1, 1, concatenated Target-Decoy search mode; 2, half search mode; 3, iteration search mode ; 4, separated Target-Decoy search mode)
 search_pattern=1
@@ -23,7 +23,7 @@ electric_pattern=1
 hplc_pattern=0
 
 #Path of coustomized chromatographic column type
-adduct_path=D:\ICXLab\ICX_Metabolomics\XY_Meta\main\isotope\HILIC_POS.txt
+adduct_path=.\XY-Meta-Win\config\HILIC_POS.txt
 
 #Preprocessing of fragment signal
 #clear [default:true, false:close this processing; true: open this processing]
