@@ -1,8 +1,8 @@
 ﻿#Path of input query spectral 
-input=.\XY-Meta-Win\query\GNPS_LIBRARY.mgf
+input=.\query\GNPS_LIBRARY.mgf
 
 #Path of input reference spectral 
-reference=.\XY-Meta-Win\database\MoNA-export-HMDB.mgf
+reference=.\database\MoNA-export-HMDB.mgf
 
 #path of output result
 output=
@@ -23,7 +23,7 @@ electric_pattern=1
 hplc_pattern=0
 
 #Path of coustomized chromatographic column type
-adduct_path=.\XY-Meta-Win\config\HILIC_POS.txt
+adduct_path=.\isotope\HILIC_POS.txt
 
 #Preprocessing of fragment signal
 #clear [default:true, false:close this processing; true: open this processing]
