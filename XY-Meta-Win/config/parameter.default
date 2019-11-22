@@ -1,20 +1,26 @@
 ﻿#Path of input query spectral 
-input=.\query\GNPS_LIBRARY.mgf
+input=..\XY-Meta-Win\query\GNPS_LIBRARY.mgf
 
 #Path of input reference spectral 
-reference=.\database\MoNA-export-HMDB.mgf
+reference=..\XY-Meta-Win\database\MoNA-export-MassBank.mgf
 
 #path of output result
 output=
 
 #path of Decoy spectral (if decoy model is set into extraposition, this option can be used)
-#decoyinput=
+#decoyinput=d:\Work\代谢组数据库\代谢物鉴定开发\汇报\Analysis_article\Different_similarity_database\unfiltered\database\Random.mgf
 
 #Search mode (default:1, 1, concatenated Target-Decoy search mode; 2, half search mode; 3, iteration search mode ; 4, separated Target-Decoy search mode)
 search_pattern=1
 
-#execution mode of decoy (default:1, 1,generate decoy from xy-meta; 2, use customized decoy
+#Execution mode of decoy (default:1, 1,generate decoy from xy-meta; 2, use customized decoy
 decoy_pattern=1
+
+#match_model (1, match algorithm of XY-meta; 2, match algorithm of cosine)
+match_model=1
+
+#Minimum matched peaks
+mmi=1
 
 #Charge mode(default:1, 0, positive and negative ; 1, positive ; 2, negative
 electric_pattern=1
@@ -23,7 +29,7 @@ electric_pattern=1
 hplc_pattern=0
 
 #Path of coustomized chromatographic column type
-adduct_path=.\isotope\HILIC_POS.txt
+adduct_path=..\XY-Meta-Win\isotope\HILIC_POS.txt
 
 #Preprocessing of fragment signal
 #clear [default:true, false:close this processing; true: open this processing]
@@ -51,8 +57,8 @@ tolerance_precur=10
 isotope=0
 tolerance_isotope=0.05
 
-#The retained propotion of target fragment signal(default:0.7, it can be set into 0.86 when use noise-filtered spectral as reference)
-decoy_similitude=0.7
+#The retained propotion of target fragment signal(defaul: 0.5, recommend: 0.5-0.7)
+decoy_similitude=0.5
 
 #Multi-core parallel (default:4)
 threads=4
