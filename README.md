@@ -1,2 +1,2 @@
 # XY-Meta
-XY-Meta: A high-efficiency search engine for large scale metabo-lome annotation with accurate FDR estimation
+XY-Meta: A High-Efficiency Search Engine for Large-Scale Metabolome Annotation with Accurate FDR Estimation
