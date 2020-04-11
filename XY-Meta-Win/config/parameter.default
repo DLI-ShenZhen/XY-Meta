@@ -8,7 +8,11 @@ reference=..\XY-Meta-Win\database\MoNA-export-MassBank.mgf
 output=
 
 #path of Decoy spectral (if decoy model is set into extraposition, this option can be used)
+<<<<<<< HEAD
 decoyinput=
+=======
+#decoyinput=
+>>>>>>> 6fca3e11a424194480db328fb8e08b61ebc43459
 
 #Search mode (default:1, 1, concatenated Target-Decoy search mode; 2, half search mode; 3, iteration search mode ; 4, separated Target-Decoy search mode)
 search_pattern=1
