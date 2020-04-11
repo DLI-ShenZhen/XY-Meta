@@ -1,5 +1,5 @@
-﻿#Path of input query spectral 
-input=..\XY-Meta-Win\query\GNPS_LIBRARY.mgf
+#Path of input query spectral 
+input=..\XY-Meta-Win\query\Massbank_passatutto.mgf
 
 #Path of input reference spectral 
 reference=..\XY-Meta-Win\database\MoNA-export-MassBank.mgf
@@ -8,7 +8,7 @@ reference=..\XY-Meta-Win\database\MoNA-export-MassBank.mgf
 output=
 
 #path of Decoy spectral (if decoy model is set into extraposition, this option can be used)
-#decoyinput=d:\Work\代谢组数据库\代谢物鉴定开发\汇报\Analysis_article\Different_similarity_database\unfiltered\database\Random.mgf
+decoyinput=
 
 #Search mode (default:1, 1, concatenated Target-Decoy search mode; 2, half search mode; 3, iteration search mode ; 4, separated Target-Decoy search mode)
 search_pattern=1
@@ -37,7 +37,7 @@ adduct_path=..\XY-Meta-Win\isotope\HILIC_POS.txt
 #merge_type [Unit type, default:0, 0, Da; 1, ppm]
 #threshould_peaks [The threshould value of fragment signal filter]
 clear=true
-merge_tolerance=0.03
+merge_tolerance=0.05
 merge_type=0
 threshold_peaks=0.0
 

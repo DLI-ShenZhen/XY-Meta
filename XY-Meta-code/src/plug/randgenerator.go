@@ -22,11 +22,9 @@ func GenerateRandomNumber(start int, end int, count int) []int {
 				break
 			}
 		}
-
 		if !exist {
 			nums = append(nums, num)
 		}
 	}
-
 	return nums
 }

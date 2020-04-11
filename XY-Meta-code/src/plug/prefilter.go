@@ -20,9 +20,9 @@ func Spectralclear(spectral_experiment []reader.Spectrum, Input_param dataframe.
 		for i := 0; i < len(spectral_experiment); i++ {
 			start_index := 0
 			var peaks_filter []reader.Signal
-			if Input_param.Merge_type == 0 {
+			if Input_param.Merge_type == 0 { //Da
 				for start_index < len(spectral_experiment[i].Peaks) {
-					if spectral_experiment[i].Peaks[start_index].Peak_intensity > Input_param.Threshold_peaks {{
+					if spectral_experiment[i].Peaks[start_index].Peak_intensity > Input_param.Threshold_peaks {
 						if len(peaks_filter) == 0 {
 							peaks_filter = append(peaks_filter, spectral_experiment[i].Peaks[start_index])
 						} else {
@@ -36,14 +36,13 @@ func Spectralclear(spectral_experiment []reader.Spectrum, Input_param dataframe.
 								start_index = h
 								break
 							}
-
 						}
 						start_index++
 					} else {
 						start_index++
 					}
 				}
-			} else if Input_param.Merge_type == 1 { 
+			} else if Input_param.Merge_type == 1 {
 				for start_index < len(spectral_experiment[i].Peaks) {
 					if spectral_experiment[i].Peaks[start_index].Peak_intensity > Input_param.Threshold_peaks {
 						if len(peaks_filter) == 0 {

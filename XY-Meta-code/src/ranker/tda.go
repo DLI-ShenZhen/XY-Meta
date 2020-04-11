@@ -70,7 +70,6 @@ func Qvalue(Compounds int, Match_result_list []dataframe.Grade) []dataframe.Grad
 	return Match_result_list
 }
 
-//快速排序
 func QuickSort(arr []dataframe.Grade, start, end int) {
 	if start < end {
 		i, j := start, end
@@ -88,7 +87,6 @@ func QuickSort(arr []dataframe.Grade, start, end int) {
 				j--
 			}
 		}
-
 		if start < j {
 			QuickSort(arr, start, j)
 		}
@@ -116,7 +114,6 @@ func QuickSort_C(arr []dataframe.Grade, start, end int) {
 				j--
 			}
 		}
-
 		if start < j {
 			QuickSort_C(arr, start, j)
 		}
@@ -127,7 +124,7 @@ func QuickSort_C(arr []dataframe.Grade, start, end int) {
 	return
 }
 
-func STDA(Compounds int, Match_result_list_target, Match_result_list_decoy []dataframe.Grade, input_param dataframe.Parameters) []dataframe.Grade {
+func STDA(Compounds int, Match_result_list_target, Match_result_list_decoy []dataframe.Grade, input_param dataframe.Parameters) []dataframe.Grade { //分离搜索FDR评估
 	if input_param.Match_model == 1 {
 		QuickSort(Match_result_list_target, 0, len(Match_result_list_target)-1)
 		QuickSort(Match_result_list_decoy, 0, len(Match_result_list_decoy)-1)

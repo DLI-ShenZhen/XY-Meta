@@ -50,7 +50,7 @@ func Mappingwriter(Match_result_list []dataframe.Grade, writepath string, Query,
 		Query_precursor_mass := strconv.FormatFloat(Query[Match_result_list[i].Queryindex].Precusor_mass, 'f', -1, 64)
 		Reference_precursor_mass := strconv.FormatFloat(Database[Match_result_list[i].Index].Precusor_mass, 'f', -1, 64)
 		Diviation_precursor_mass := strconv.FormatFloat(Query[Match_result_list[i].Queryindex].Precusor_mass-Database[Match_result_list[i].Index].Precusor_mass, 'f', -1, 64)
-		Cosine := strconv.FormatFloat(Match_result_list[i].Cosine_sum, 'f', -1, 64)
+		Cosine := strconv.FormatFloat(Match_result_list[i].Cosine_similar, 'f', -1, 64)
 		Rtime := strconv.FormatFloat(Query[Match_result_list[i].Queryindex].Retention_time, 'f', -1, 64)
 		Adduct := ""
 		Adduct_mass := ""

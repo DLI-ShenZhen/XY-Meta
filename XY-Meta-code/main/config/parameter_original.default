@@ -1,0 +1,66 @@
+#Path of input query spectral 
+input=
+
+#Path of input reference spectral 
+reference=
+
+#path of output result
+output=
+
+#path of Decoy spectral (if decoy model is set into extraposition, this option can be used)
+#decoyinput=
+
+#Search mode (default:1, 1, concatenated Target-Decoy search mode; 2, half search mode; 3, iteration search mode ; 4, separated Target-Decoy search mode)
+search_pattern=1
+
+#Execution mode of decoy (default:1, 1,generate decoy from xy-meta; 2, use customized decoy
+decoy_pattern=1
+
+#match_model (1, match algorithm of XY-meta; 2, match algorithm of cosine)
+match_model=1
+
+#Minimum matched peaks
+mmi=1
+
+#Charge mode(default:1, 0, positive and negative ; 1, positive ; 2, negative
+electric_pattern=1
+
+#Chromatographic column type(default:0, 0, customized ; 1, hydrophilia column; 2, hydrophobic column 
+hplc_pattern=0
+
+#Path of coustomized chromatographic column type
+adduct_path=
+
+#Preprocessing of fragment signal
+#clear [default:true, false:close this processing; true: open this processing]
+#merge_tolerance [default:0.03, The tolerance of merge fragmen signal]
+#merge_type [Unit type, default:0, 0, Da; 1, ppm]
+#threshould_peaks [The threshould value of fragment signal filter]
+clear=true
+merge_tolerance=0.05
+merge_type=0
+threshold_peaks=0.0
+
+#Setting the mass range of precusor(default: 0-6000)
+Min_mass=0
+Max_mass=6000
+
+#Precursor mass tolerance
+#precur [Unit type, default:1, 0, Da; 1, ppm]
+#tolerance_precur [Setting precursor mass tolerance]
+precur=1
+tolerance_precur=10
+
+#Fragment mass tolerance
+#isotope [Unit type, default:1, 0, Da; 1, ppm]
+#tolerance_isotope [Setting fragment mass tolerance]
+isotope=0
+tolerance_isotope=0.05
+
+#The retained propotion of target fragment signal(defaul: 0.5, recommend: 0.5-0.7)
+decoy_similitude=0.5
+
+#Multi-core parallel (default:4)
+threads=4
+
+#end

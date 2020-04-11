@@ -202,9 +202,9 @@ func (l *LinkList) Search(index int) interface{} {
 
 func (l *LinkList) PrintInfo() {
 	fmt.Println("***********************************************")
-	fmt.Println("链表长度为：", l.GetLength())
-	fmt.Println("链表是否为空:", l.EmptyIs())
-	fmt.Print("遍历链表：")
+	fmt.Println("The length of linker list：", l.GetLength())
+	fmt.Println("Is the linked list is empty:", l.EmptyIs())
+	fmt.Print("Traversing the linked list：")
 	l.Traverse()
 	fmt.Println("***********************************************")
 }
