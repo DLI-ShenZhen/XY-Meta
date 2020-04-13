@@ -1,5 +1,6 @@
 //TDA method module
 //This module is used to caculate the the FDR of annotation result after database search
+
 package ranker
 
 import (
@@ -58,8 +59,10 @@ func Qvalue(Compounds int, Match_result_list []dataframe.Grade) []dataframe.Grad
 	for i := len(Match_result_list) - 1; i >= 0; i-- {
 		if Match_result_list[i].Index >= Decoy_label {
 			Decoy++
+			Match_result_list[i].Match_label = "decoy"
 		} else {
 			Target++
+			Match_result_list[i].Match_label = "target"
 		}
 		if 2*float64(Decoy)/float64(Decoy+Target) >= 1.0 {
 			Match_result_list[i].FDR = 1.0
@@ -87,6 +90,7 @@ func QuickSort(arr []dataframe.Grade, start, end int) {
 				j--
 			}
 		}
+
 		if start < j {
 			QuickSort(arr, start, j)
 		}
@@ -114,6 +118,7 @@ func QuickSort_C(arr []dataframe.Grade, start, end int) {
 				j--
 			}
 		}
+
 		if start < j {
 			QuickSort_C(arr, start, j)
 		}
@@ -124,7 +129,7 @@ func QuickSort_C(arr []dataframe.Grade, start, end int) {
 	return
 }
 
-func STDA(Compounds int, Match_result_list_target, Match_result_list_decoy []dataframe.Grade, input_param dataframe.Parameters) []dataframe.Grade { //分离搜索FDR评估
+func STDA(Compounds int, Match_result_list_target, Match_result_list_decoy []dataframe.Grade, input_param dataframe.Parameters) []dataframe.Grade {
 	if input_param.Match_model == 1 {
 		QuickSort(Match_result_list_target, 0, len(Match_result_list_target)-1)
 		QuickSort(Match_result_list_decoy, 0, len(Match_result_list_decoy)-1)
@@ -134,7 +139,6 @@ func STDA(Compounds int, Match_result_list_target, Match_result_list_decoy []dat
 		QuickSort_C(Match_result_list_decoy, 0, len(Match_result_list_decoy)-1)
 		SQvalue_C(Compounds, Match_result_list_target, Match_result_list_decoy)
 	}
-
 	return Match_result_list_target
 }
 
@@ -144,11 +148,13 @@ func SQvalue(Compounds int, Match_result_list_target, Match_result_list_decoy []
 	for i := len(Match_result_list_target) - 1; i >= 0; i-- {
 		if Match_result_list_target[i].Score >= Match_result_list_decoy[decoy_index].Score {
 			Target++
+			Match_result_list_target[i].Match_label = "target"
 			Match_result_list_target[i].FDR = float64(Decoy) / float64(Decoy+Target)
 		} else {
 			Decoy++
 			Match_result_list_target[i].FDR = float64(Decoy) / float64(Decoy+Target)
 			Match_result_list_target[i].Index = Compounds + Match_result_list_decoy[decoy_index].Index
+			Match_result_list_target[i].Match_label = "decoy"
 			decoy_index--
 		}
 	}
@@ -161,11 +167,13 @@ func SQvalue_C(Compounds int, Match_result_list_target, Match_result_list_decoy 
 	for i := len(Match_result_list_target) - 1; i >= 0; i-- {
 		if Match_result_list_target[i].Cosine_similar >= Match_result_list_decoy[decoy_index].Cosine_similar {
 			Target++
+			Match_result_list_target[i].Match_label = "target"
 			Match_result_list_target[i].FDR = float64(Decoy) / float64(Decoy+Target)
 		} else {
 			Decoy++
 			Match_result_list_target[i].FDR = float64(Decoy) / float64(Decoy+Target)
 			Match_result_list_target[i].Index = Compounds + Match_result_list_decoy[decoy_index].Index
+			Match_result_list_target[i].Match_label = "decoy"
 			decoy_index--
 		}
 	}
