@@ -3,7 +3,7 @@
 ### ***********************************************************************
 
 #if ("BiocManager" %in% requirement_packages[,1]!=TRUE){
-  #install.packages("getopt")
+#install.packages("getopt")
 #}
 requirement_packages=installed.packages()
 if ("getopt" %in% requirement_packages[,1]!=TRUE){
@@ -274,20 +274,25 @@ SpecMatch=function(path_work,label,quantify_data_path,opt){
   print("XY-Meta:Start to match")
   
   XY_Meta_path=opt$xymeta_path#path of search engine
+  XY_Meta_dir=dirname(XY_Meta_path)
   
   query_path=Sys.glob(paste(getwd(),"*_merge.mgf",sep='/'))#path of query mgf
   paramater_path=opt$paramater_path#path of paramater
   command_line_input=paste(XY_Meta_path,"-S",paramater_path[1],"-D",query_path,sep = " ")
+  setwd(XY_Meta_dir)
   shell(command_line_input,wait=TRUE,intern = TRUE)
-  
+  setwd(path_work)
   #......Analyze the result from XY-Meta......
   #db.MS2_path=paste(getwd(),"/db.MS2.rData",sep = "")
   #load(db.MS2_path)
   print("Analyze match result")
-
+  
   result_path=Sys.glob(paste(getwd(),"*.meta",sep='/'))
   #import the identification result of XY-Meta
   xyMetaResult=read.delim(result_path,header = T,sep = "\t")
+  if (nrow(xyMetaResult)==0){
+    return()
+  }
   xyMetaResult=xyMetaResult[which(xyMetaResult$Score!=0),]
   flag=which(xyMetaResult$FDR<0.5)
   xyMetaResult_filter=xyMetaResult[1:flag[1],]#FDR filter
@@ -322,3 +327,10 @@ if (opt$search=="TRUE"){
 }
 
 print("Finished")
+
+
+
+test=function(x){
+  return()
+  return(x)
+}
