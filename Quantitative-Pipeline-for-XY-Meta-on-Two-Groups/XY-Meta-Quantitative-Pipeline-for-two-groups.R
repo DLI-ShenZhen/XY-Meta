@@ -1,5 +1,5 @@
 ### ***********************************************************************
-### Author: Dehua Li <dehualiy@qq.com>;
+### Author: Dehua Li <dehualiay@qq.com>;
 ### ***********************************************************************
 
 #if ("BiocManager" %in% requirement_packages[,1]!=TRUE){
