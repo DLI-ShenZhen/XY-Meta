@@ -289,35 +289,42 @@ SpecMatch=function(path_work,label,quantify_data_path,opt){
   
   result_path=Sys.glob(paste(getwd(),"*.meta",sep='/'))
   #import the identification result of XY-Meta
-  xyMetaResult=read.delim(result_path,header = T,sep = "\t")
+  print(result_path)
+  xyMetaResult=read.delim(result_path,header = T,sep = "\t",stringsAsFactors = F)
   if (nrow(xyMetaResult)==0){
     return()
   }
   xyMetaResult=xyMetaResult[which(xyMetaResult$Score!=0),]
-  flag=which(xyMetaResult$FDR<0.5)
-  xyMetaResult_filter=xyMetaResult[1:flag[1],]#FDR filter
+  flag=which(xyMetaResult$FDR<0.5)#FDR threshold
+  xyMetaResult_filter=xyMetaResult[flag,]#FDR filter
   rownames(xyMetaResult_filter)=xyMetaResult_filter[,1]
   
   #reading quantify data table
-  quantify_data=read.delim(quantify_data_path,header = TRUE,sep = "\t",row.names = 1)
+  quantify_data=read.delim(quantify_data_path,header = TRUE,sep = "\t",row.names = 1,stringsAsFactors = F)
   annotation_label=c()
   #Annotating the match result
-  for (i in 1:nrow(xyMetaResult_filter)){
+  for (i in 1:nrow(quantify_data)){
     annotation_temp=""
-    for (j in 1:nrow(quantify_data)){
-      if (xyMetaResult$Query_precursor_mass[i]<=quantify_data$mzmax[j]&
-          xyMetaResult$Query_precursor_mass[i]>=quantify_data$mzmin[j]&
-          xyMetaResult$Query_precursor_retention_time[i]<=quantify_data$rtmax[j]&
-          xyMetaResult$Query_precursor_retention_time[i]>=quantify_data$rtmin[j]){
-        annotation_temp=paste(quantify_data$name[j],annotation_temp,sep = ";")
+    flag=which(xyMetaResult_filter$Query_precursor_mass<=quantify_data$mzmax[i]&
+                 xyMetaResult_filter$Query_precursor_mass>=quantify_data$mzmin[i]&
+                 xyMetaResult_filter$Query_precursor_retention_time<=quantify_data$rtmax[i]&
+                 xyMetaResult_filter$Query_precursor_retention_time>=quantify_data$rtmin[i])
+    peaks_match=xyMetaResult_filter[flag,]
+    if (nrow(peaks_match)!=0){
+      for (j in nrow(peaks_match)){
+        if (annotation_temp==""){
+          annotation_temp=paste(annotation_temp,peaks_match$Reference_spectrum[j],sep = "")
+        }else{
+          annotation_temp=paste(annotation_temp,peaks_match$Reference_spectrum[j],sep = ";")
+        }
       }
     }
     annotation_label=append(annotation_label,annotation_temp)
   }
-  xyMetaResult_filter=cbind(xyMetaResult_filter,MS1=annotation_label)
+  quantify_data=cbind(quantify_data,MS2_annotation=annotation_label)
   
   #output the analysis result
-  write.csv(xyMetaResult_filter,"Feature_identification_anno.csv",quote = TRUE)
+  write.csv(quantify_data,"XY_Meta_Feature_identification_anno.csv",quote = TRUE)
   print("Match step has done")
 }
 
