@@ -1,5 +1,6 @@
 //Database modification module
 //The reference is read from local directory and is modified by our method in this package
+
 package database
 
 import (
@@ -9,17 +10,32 @@ import (
 	"math/rand"
 	"plug"
 	"reader"
+	"sort"
 )
+
+type Slice struct {
+	sort.Float64Slice
+	f []reader.Signal
+}
+
+func (s Slice) Less(i, j int) bool {
+	return s.f[i].Peak_mass > s.f[j].Peak_mass
+}
+
+func (s Slice) Swap(i, j int) {
+	s.Float64Slice.Swap(i, j)
+	s.f[i], s.f[j] = s.f[j], s.f[i]
+}
 
 func Inputdatabase(path_forward_database string, Input_param dataframe.Parameters) ([]reader.Spectrum, []reader.Spectrum) {
 	fmt.Println("Loading Target Database")
 	forward_database := reader.Spectrumreader(path_forward_database)
 	fmt.Println("Generating Decoy Database!")
 	Decoy_database := Decoygenerator(forward_database, 2000*Input_param.Min_mass, 2000*Input_param.Max_mass, Input_param.Decoy_similitude, Input_param.Threads)
-	plug.Spectralclear(forward_database, Input_param)
-	plug.SpectralNormalize(forward_database)
-	plug.Spectralclear(Decoy_database, Input_param)
-	plug.SpectralNormalize(Decoy_database)
+	plug.Spectralclear(forward_database, Input_param) 
+	plug.SpectralNormalize(forward_database)          
+	plug.Spectralclear(Decoy_database, Input_param)   
+	plug.SpectralNormalize(Decoy_database)            
 	return forward_database, Decoy_database
 }
 
@@ -35,12 +51,20 @@ func Decoygenerator(forward_database []reader.Spectrum, lower_bound, upper_bound
 		peaks_map[err_mass] = spectrum_num_list
 	}
 	for i := 0; i < len(forward_database); i++ {
-		peaks_index := chop(forward_database[i].Precusor_mass, permutation)
+		if forward_database[i].Precusor_mass == 0 {
+			var fragment_mass []float64
+			for u := 0; u < len(forward_database[i].Peaks); u++ {
+				fragment_mass = append(fragment_mass, forward_database[i].Peaks[u].Peak_mass)
+			}
+			forward_database[i].Precusor_mass = plug.Max(fragment_mass)
+		}
+
+		peaks_index := chop(i, forward_database[i].Precusor_mass, permutation)
 		approxication_position[forward_database[i].Precusor_mass] = peaks_index
+
 		peaks_map[peaks_index] = append(peaks_map[peaks_index], i)
 	}
 	var Decoy_database []reader.Spectrum
-
 	for i := 0; i < len(forward_database); i++ {
 		var decoy_spectrum reader.Spectrum
 		Decoy_database = append(Decoy_database, decoy_spectrum)
@@ -59,7 +83,7 @@ func Decoygenerator(forward_database []reader.Spectrum, lower_bound, upper_bound
 func forgedSpec(c chan int, start, end int, forward_database, Decoy_database []reader.Spectrum, peaks_map map[float64][]int, approxication_position map[float64]float64, Decoy_similitude float64) {
 	r := rand.New(rand.NewSource(int64(len(forward_database))))
 	for i := start; i < end; i++ {
-		var signal_random []reader.Signal
+		var signal_random Slice
 		if forward_database[i].Precusor_mass == 0 {
 			var fragment_mass []float64
 			for u := 0; u < len(forward_database[i].Peaks); u++ {
@@ -68,7 +92,7 @@ func forgedSpec(c chan int, start, end int, forward_database, Decoy_database []r
 			forward_database[i].Precusor_mass = plug.Max(fragment_mass)
 		}
 		signal_spectral_mz := approxication_position[forward_database[i].Precusor_mass]
-		signal_spectral := peaks_map[signal_spectral_mz]
+		signal_spectral := peaks_map[signal_spectral_mz]                               
 		if len(signal_spectral) < 15 {
 			for {
 				if len(signal_spectral) == 15 {
@@ -86,14 +110,15 @@ func forgedSpec(c chan int, start, end int, forward_database, Decoy_database []r
 					signal_spectral = append(signal_spectral, random_temp_index)
 				}
 			}
-		}
+		} 
+
 		for _, spectrum_index := range signal_spectral {
 			for j := 0; j < len(forward_database[spectrum_index].Peaks); j++ {
 				if forward_database[spectrum_index].Peaks[j].Peak_mass <= forward_database[i].Precusor_mass {
-					signal_random = append(signal_random, forward_database[spectrum_index].Peaks[j])
+					signal_random.f = append(signal_random.f, forward_database[spectrum_index].Peaks[j])
 				}
 			}
-		}
+		} 
 		signal_random_counts := len(forward_database[i].Peaks)
 		Decoy_database[i].Charge = forward_database[i].Charge
 		Decoy_database[i].Peak_counts = signal_random_counts
@@ -103,64 +128,42 @@ func forgedSpec(c chan int, start, end int, forward_database, Decoy_database []r
 		Decoy_database[i].Peaks = append(Decoy_database[i].Peaks, forward_database[i].Peaks[forward_database[i].Peak_counts-1])
 		fillnum := int(Decoy_similitude * float64(signal_random_counts))
 		nums := generateRandomNumber(0, len(forward_database[i].Peaks)-1, fillnum)
-		var sort_peaks_temp []float64
-		for _, signal_unit := range signal_random {
-			sort_peaks_temp = append(sort_peaks_temp, signal_unit.Peak_mass)
-		}
-		quickSort(sort_peaks_temp, 0, len(sort_peaks_temp))
-		for j := 0; j < len(sort_peaks_temp); j++ {
-			for h := j; h < len(signal_random); h++ {
-				if signal_random[h].Peak_mass == sort_peaks_temp[j] {
-					swapping := signal_random[j]
-					signal_random[j] = signal_random[h]
-					signal_random[h] = swapping
-					break
-				}
-			}
-		}
+
+		sort.Sort(signal_random)
 		for s := 0; s < len(nums); s++ {
 			Decoy_database[i].Peaks = append(Decoy_database[i].Peaks, forward_database[i].Peaks[nums[s]])
 		}
+
 		signal_random_counts = forward_database[i].Peak_counts - fillnum
 		random_initial := r.Intn(1)
-		step_length := int(float64(1/2.0)*float64(len(signal_random))) / signal_random_counts
-		search_index_front := int(float64(1/2.0) * float64(len(signal_random)))
-		if len(signal_random) != 0 {
+		step_length := int(float64(1/2.0)*float64(len(signal_random.f))) / signal_random_counts
+		search_index_front := int(float64(1/2.0) * float64(len(signal_random.f)))
+		if len(signal_random.f) != 0 {
 			for step := 0; step < signal_random_counts; step++ {
-				search_index := search_index_front + step*step_length + step_length - random_initial
-				if search_index >= len(signal_random) {
-					Decoy_database[i].Peaks = append(Decoy_database[i].Peaks, signal_random[len(signal_random)-1])
+				search_index := search_index_front + step*step_length + step_length - random_initial 
+				if search_index >= len(signal_random.f) {
+					Decoy_database[i].Peaks = append(Decoy_database[i].Peaks, signal_random.f[len(signal_random.f)-1])
 					break
-				}
-				Decoy_database[i].Peaks = append(Decoy_database[i].Peaks, signal_random[search_index])
+				} 
+				Decoy_database[i].Peaks = append(Decoy_database[i].Peaks, signal_random.f[search_index])
 			}
 		}
+
 		Decoy_database[i] = randomshift(Decoy_database[i], 0.7)
 		Decoy_database[i].Spectrl_number = Decoy_database[i].Spectrl_number + "_REV"
-		var sort_peaks []float64
-		for _, signal_unit := range Decoy_database[i].Peaks {
-			sort_peaks = append(sort_peaks, signal_unit.Peak_mass)
-		}
-		quickSort(sort_peaks, 0, len(sort_peaks))
-		for j := 0; j < len(sort_peaks); j++ {
-			for h := j; h < len(Decoy_database[i].Peaks); h++ {
-				if Decoy_database[i].Peaks[h].Peak_mass == sort_peaks[j] {
-					swapping := Decoy_database[i].Peaks[j]
-					Decoy_database[i].Peaks[j] = Decoy_database[i].Peaks[h]
-					Decoy_database[i].Peaks[h] = swapping
-					break
-				}
-			}
-		}
+		var sort_peaks Slice 
+		sort_peaks.f = Decoy_database[i].Peaks
+		sort.Sort(sort_peaks)
+		Decoy_database[i].Peaks = sort_peaks.f
 	}
 	c <- 1
 }
 
-func chop(search_dount float64, permutation []float64) float64 {
+func chop(index int, search_dount float64, permutation []float64) float64 { 
 	var approximation float64
 	start := 0
 	end := len(permutation)
-	middle := (end - start) / 2
+	middle := (end - start) 
 	for {
 		if permutation[middle]-search_dount > 0.0000 {
 			if permutation[middle]-search_dount == 0.0005 {
@@ -204,19 +207,23 @@ func chop(search_dount float64, permutation []float64) float64 {
 			break
 		}
 	}
-	return approximation
+	return approximation 
 }
 
+
 func randomshift(decoy_spectrum reader.Spectrum, Decoy_similitude float64) reader.Spectrum {
-	random_shift_counts := float64(len(decoy_spectrum.Peaks)) * (1 - Decoy_similitude)
+	random_shift_counts := float64(len(decoy_spectrum.Peaks)) * (1 - Decoy_similitude) 
 	var step_length int
 	if random_shift_counts < 1 {
 		step_length = 1
 	} else {
 		step_length = len(decoy_spectrum.Peaks) / int(random_shift_counts)
 	}
+	//r := rand.New(rand.NewSource(6)) //rand.New(rand.NewSource(time.Now().UnixNano()))
 	r := rand.New(rand.NewSource(int64(len(decoy_spectrum.Peaks))))
 	random_seed := r.Intn(3)
+	//shiftnums := generateRandomNumber(0, len(decoy_spectrum.Peaks), int(random_shift_counts))
+	//ion_fragments := []float64{15, 17}
 	for i := 0; i < int(random_shift_counts); i++ {
 		random_search_index := step_length*i + random_seed
 		if random_search_index >= int(random_shift_counts) {
@@ -228,13 +235,14 @@ func randomshift(decoy_spectrum reader.Spectrum, Decoy_similitude float64) reade
 			}
 			break
 		}
-		branch_random := r.Intn(1)
+		branch_random := r.Intn(1) 
 		if branch_random == 0 {
 			decoy_spectrum.Peaks[random_search_index].Peak_mass = decoy_spectrum.Peaks[random_search_index].Peak_mass + decoy_spectrum.Precusor_mass*0.000003
 		} else {
 			decoy_spectrum.Peaks[random_search_index].Peak_mass = decoy_spectrum.Peaks[random_search_index].Peak_mass - decoy_spectrum.Precusor_mass*0.000005
 		}
 	}
+
 	return decoy_spectrum
 }
 
