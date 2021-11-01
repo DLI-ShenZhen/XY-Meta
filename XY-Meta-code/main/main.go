@@ -393,7 +393,7 @@ func inputparam(parameter_path, query_temp_path, reference_temp_path string) dat
 						slice2[1] = strings.Replace(slice2[1], "\\", "/", -1)
 						Param.Input = slice2[1]
 					} else if query_temp_path != "null" {
-						Param.Input = query_temp_path
+						Param.Input = strings.Replace(query_temp_path, "\\", "/", -1)
 					}
 				} else if slice2[0] == "output" {
 					slice2[1] = strings.Replace(slice2[1], "\\", "/", -1)
