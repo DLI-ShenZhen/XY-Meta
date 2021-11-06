@@ -421,7 +421,7 @@ func inputparam(parameter_path, query_temp_path, reference_temp_path string) dat
 				} else if slice2[0] == "tolerance_precur" {
 					temp, _ := strconv.ParseFloat(slice2[1], 64)
 					Param.Tolerance_precur = temp
-				} else if slice2[0] == "isotope" {
+				} else if slice2[0] == "adduct" {
 					temp, _ := strconv.Atoi(slice2[1])
 					Param.Isotope = temp
 				} else if slice2[0] == "tolerance_isotope" {

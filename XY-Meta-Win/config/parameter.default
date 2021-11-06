@@ -13,20 +13,20 @@ decoyinput=
 #Search mode (default:1, 1, concatenated Target-Decoy search mode; 2, half search mode; 3, iteration search mode ; 4, separated Target-Decoy search mode)
 search_pattern=1
 
-#Execution mode of decoy (default:1, 1,generate decoy from xy-meta; 2, use customized decoy
+#Execution mode of decoy (default:1, 1,generate decoy from xy-meta; 2, use customized decoy)
 decoy_pattern=1
 
 #match_model (1, match algorithm of XY-meta; 2, match algorithm of cosine)
 match_model=1
 
 #Minimum matched peaks
-mmi=1
+mmi=2
 
-#Charge mode(default:1, 0, positive and negative ; 1, positive ; 2, negative
+#Charge mode(default:1, 0, positive and negative ; 1, positive ; 2, negative)
 electric_pattern=1
 
-#Chromatographic column type(default:0, 0, customized ; 1, hydrophilia column; 2, hydrophobic column 
-hplc_pattern=0
+#Chromatographic column type(default:2, 0, customized ; 1, hydrophilia column; 2, hydrophobic column)
+hplc_pattern=2
 
 #Path of coustomized chromatographic column type
 adduct_path=..\XY-Meta-Win\isotope\HILIC_POS.txt

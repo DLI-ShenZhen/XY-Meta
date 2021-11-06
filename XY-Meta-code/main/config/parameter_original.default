@@ -20,13 +20,13 @@ decoy_pattern=1
 match_model=1
 
 #Minimum matched peaks
-mmi=1
+mmi=2
 
-#Charge mode(default:1, 0, positive and negative ; 1, positive ; 2, negative
+#Charge mode(default:1, 0, positive and negative ; 1, positive ; 2, negative)
 electric_pattern=1
 
-#Chromatographic column type(default:0, 0, customized ; 1, hydrophilia column; 2, hydrophobic column 
-hplc_pattern=0
+#Chromatographic column type(default:2, 0, customized ; 1, hydrophilia column; 2, hydrophobic column)
+hplc_pattern=2
 
 #Path of coustomized chromatographic column type
 adduct_path=
